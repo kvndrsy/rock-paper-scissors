@@ -6,11 +6,14 @@
     </head>
     <body>
         <script>
+            // Define playable strings
             const ROCK = "Rock";
             const PAPER = "Paper";
             const SCISSORS = "Scissors";
 
+            // Randomly generate the computer's selection
             function computerPlay() {
+                // switch condition will be random integer: 0, 1, or 2
                 switch ( Math.floor(Math.random() * 3) ) {
                     case 0:
                         return ROCK;
@@ -22,39 +25,51 @@
                 
             }
 
+            // Obtain player's selection
             function playerPlay() {
                 let playerSelection;
+                // Repeatedly prompt player for selection until valid input is provided
                 while (true) {
                     playerSelection = prompt("Enter Rock, Paper, or Scissors:", "Rock");
+                    // Check for empty string or undefined value (i.e., cancel button)
                     if (playerSelection) {
+                        // Standardize player's input: capital first letter followed by lowercase
                         playerSelection = playerSelection[0].toUpperCase() + playerSelection.slice(1).toLowerCase();
                     }
+                    // Player's input is valid if playerSelection matches ROCK, PAPER, or SCISSORS
                     switch (playerSelection) {
                         case ROCK:
                         case PAPER:
                         case SCISSORS:
                             return playerSelection;
                         default:
+                            // Let player know that given input was not valid
                             console.log("Invalid selection. Try again.");
                     }
                 }
             }
 
+            // Compare player's and computer's selections to determine winner
             function playRound(playerSelection, computerSelection) {
+                // Test condition for draw (no winner or loser)
                 if (playerSelection === computerSelection) {
                     return "A draw!"
                 } else if (
+                    // Test conditions for player losing
                     playerSelection === ROCK && computerSelection === PAPER 
                     || playerSelection === PAPER && computerSelection === SCISSORS 
                     || playerSelection === SCISSORS && computerSelection === ROCK
                     ) {
                     return `You lose! ${computerSelection} beats ${playerSelection}.`
                 } else {
+                    // Only remaining option is that player has won
                     return `You win! ${playerSelection} beats ${computerSelection}.`
                 }
             }
 
+            // Play a game (some number of rounds) against the computer
             function game() {
+                // Loop determines the number of rounds in a game
                 for (i = 0; i < 5; i++) {
                     console.log(playRound(playerPlay(), computerPlay()));
                 }
