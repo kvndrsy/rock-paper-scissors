@@ -55,11 +55,11 @@
                 if (playerSelection === computerSelection) {
                     return "A draw!"
                 } else if (
-                    // Test conditions for player losing
-                    playerSelection === ROCK && computerSelection === PAPER 
-                    || playerSelection === PAPER && computerSelection === SCISSORS 
-                    || playerSelection === SCISSORS && computerSelection === ROCK
-                    ) {
+                        // Test conditions for player losing
+                        playerSelection === ROCK && computerSelection === PAPER ||
+                        playerSelection === PAPER && computerSelection === SCISSORS ||
+                        playerSelection === SCISSORS && computerSelection === ROCK
+                        ) {
                     return `You lose! ${computerSelection} beats ${playerSelection}.`
                 } else {
                     // Only remaining option is that player has won
