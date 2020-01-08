@@ -1,81 +1,95 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Rock, Paper, Scissors</title>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <script>
-            // Define playable strings
-            const ROCK = "Rock";
-            const PAPER = "Paper";
-            const SCISSORS = "Scissors";
+  <head>
+    <title>Rock, Paper, Scissors</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div id="playerButtons">
+      <button type="button" name="rock">Rock</button>
+      <button type="button" name="paper">Paper</button>
+      <button type="button" name="scissors">Scissors</button>
+    </div>
+    <div id="results">
+      <p id="roundWinner"></p>
+      <p id="playerScore"></p>
+      <p id="computerScore"></p>
+      <p id="matchWinner"></p>
+    </div>
+    <script>
+      const ROCK = "Rock";
+      const PAPER = "Paper";
+      const SCISSORS = "Scissors";
+      let playerScore = 0;
+      let computerScore = 0;
+      let isFirstRound = true;
 
-            // Randomly generate the computer's selection
-            function computerPlay() {
-                // switch condition will be random integer: 0, 1, or 2
-                switch ( Math.floor(Math.random() * 3) ) {
-                    case 0:
-                        return ROCK;
-                    case 1:
-                        return PAPER;
-                    case 2:
-                        return SCISSORS;
-                }
-                
-            }
+      // Randomly generate the computer's selection
+      function computerPlay() {
+        // switch condition will be random integer: 0, 1, or 2
+        switch ( Math.floor(Math.random() * 3) ) {
+          case 0: return ROCK;
+          case 1: return PAPER;
+          case 2: return SCISSORS;
+        }
+      }
 
-            // Obtain player's selection
-            function playerPlay() {
-                let playerSelection;
-                // Repeatedly prompt player for selection until valid input is provided
-                while (true) {
-                    playerSelection = prompt("Enter Rock, Paper, or Scissors:", "Rock");
-                    // Check for empty string or undefined value (i.e., cancel button)
-                    if (playerSelection) {
-                        // Standardize player's input: capital first letter followed by lowercase
-                        playerSelection = playerSelection[0].toUpperCase() + playerSelection.slice(1).toLowerCase();
-                    }
-                    // Player's input is valid if playerSelection matches ROCK, PAPER, or SCISSORS
-                    switch (playerSelection) {
-                        case ROCK:
-                        case PAPER:
-                        case SCISSORS:
-                            return playerSelection;
-                        default:
-                            // Let player know that given input was not valid
-                            console.log("Invalid selection. Try again.");
-                    }
-                }
-            }
+      function updateScore(playerNewScore, computerNewScore) {
+        const playerScorePara = document.querySelector('#playerScore');
+        const computerScorePara = document.querySelector('#computerScore');
 
-            // Compare player's and computer's selections to determine winner
-            function playRound(playerSelection, computerSelection) {
-                // Test condition for draw (no winner or loser)
-                if (playerSelection === computerSelection) {
-                    return "A draw!"
-                } else if (
-                        // Test conditions for player losing
-                        playerSelection === ROCK && computerSelection === PAPER ||
-                        playerSelection === PAPER && computerSelection === SCISSORS ||
-                        playerSelection === SCISSORS && computerSelection === ROCK
-                        ) {
-                    return `You lose! ${computerSelection} beats ${playerSelection}.`
-                } else {
-                    // Only remaining option is that player has won
-                    return `You win! ${playerSelection} beats ${computerSelection}.`
-                }
-            }
+        playerScorePara.innerHTML = `Player Score: ${playerNewScore}`;
+        computerScorePara.innerHTML = `Computer Score: ${computerNewScore}`;
+      }
 
-            // Play a game (some number of rounds) against the computer
-            function game() {
-                // Loop determines the number of rounds in a game
-                for (i = 0; i < 5; i++) {
-                    console.log(playRound(playerPlay(), computerPlay()));
-                }
-            }
+      function resetScores() {
+        [playerScore, computerScore] = [0, 0];
+        isFirstRound = true;
+      }
 
-            game();
-        </script>
-    </body>
+      function playRound() {
+        const playerSelection = this.innerHTML;
+        const computerSelection = computerPlay();
+        const roundWinnerPara = document.querySelector('#roundWinner');
+        const matchWinnerPara = document.querySelector('#matchWinner');
+
+        //console.log("Player: " + playerSelection);
+        //console.log("Computer: " + computerSelection);
+
+        if (isFirstRound) {
+          matchWinnerPara.innerHTML = "";
+          isFirstRound = false;
+        }
+
+        if (playerSelection === computerSelection) {
+          roundWinnerPara.innerHTML = "A draw!";
+          updateScore(playerScore, computerScore);
+        } else if (
+                    // Test conditions for player losing
+                    playerSelection === ROCK && computerSelection === PAPER ||
+                    playerSelection === PAPER && computerSelection === SCISSORS ||
+                    playerSelection === SCISSORS && computerSelection === ROCK
+                  ) {
+          roundWinnerPara.innerHTML = `You lose! ${computerSelection} beats ${playerSelection}.`;
+          updateScore(playerScore, ++computerScore);
+        } else {
+          // Only remaining option is that player has won the round
+          roundWinnerPara.innerHTML = `You win! ${playerSelection} beats ${computerSelection}.`;
+          updateScore(++playerScore, computerScore);
+        }
+
+        // A match concludes once a contestant reaches 5 points, upon which scores reset.
+        if (playerScore === 5) {
+          matchWinnerPara.innerHTML = "Player wins the match!";
+          resetScores();
+        } else if (computerScore === 5) {
+          matchWinnerPara.innerHTML = "Computer wins the match!"
+          resetScores();
+        }
+      }
+
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => button.addEventListener('click', playRound));
+  </script>
+  </body>
 </html>
